@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vishreyuu's Diary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #6366f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30%, -50%) rotate(120deg); }
+            66% { transform: translate(-20%, 30%) rotate(240deg); }
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            animation: slideDown 0.6s ease;
+            padding: 1.5rem;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .auth-container {
+            max-width: 450px;
+            margin: 100px auto;
+            padding: 2.5rem;
+            animation: fadeInScale 0.5s ease;
+        }
+
+        @keyframes fadeInScale {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .note-card {
+            padding: 1.5rem;
+            animation: fadeInUp 0.5s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--note-color, var(--accent));
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .note-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            max-height: 150px;
+            overflow: hidden;
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .note-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .locked-note {
+            opacity: 0.7;
+            position: relative;
+        }
+
+        .locked-note::after {
+            content: '🔒';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .search-bar {
+            margin-bottom: 2rem;
+            padding: 1rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .tag-input-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            padding: 0.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tag-chip {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+
+        .tag-chip button {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .user-search {
+            margin-top: 1rem;
+        }
+
+        .user-list {
+            margin-top: 0.5rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .user-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-section {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 2rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .session-list {
+            margin-top: 1rem;
+        }
+
+        .session-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .session-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .history-item {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.5rem;
+            min-width: 200px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-menu-wrapper {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <div id="authScreen" class="auth-container glass">
+        <h1 class="logo" style="text-align: center; margin-bottom: 0.5rem;">📖 Vishreyuu's Diary</h1>
+        <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">Your private encrypted journal</p>
+        <div id="loginForm">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="login()">Login</button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="toggleAuth()">Create Account</button>
+        </div>
+        <div id="registerForm" class="hidden">
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="registerUsername" placeholder="Choose username">
+            </div>
+            <div class="input-group">
+                <label>Email (Optional)</label>
+                <input type="email" id="registerEmail" placeholder="your@email.com">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="registerPassword" placeholder="Choose password">
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="register()">Register</button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="toggleAuth()">Back to Login</button>
+        </div>
+    </div>
+
+    <div id="appScreen" class="container hidden">
+        <div class="header glass">
+            <h1 class="logo">📖 Vishreyuu's Diary</h1>
+            <div class="user-info">
+                <div class="user-menu-wrapper">
+                    <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu()"></div>
+                    <div class="dropdown-menu hidden" id="userMenu">
+                        <div class="dropdown-item" onclick="openProfileModal()">
+                            <span>👤</span> Profile
+                        </div>
+                        <div class="dropdown-item" onclick="openSessionsModal()">
+                            <span>🔐</span> Active Sessions
+                        </div>
+                        <div class="dropdown-item" onclick="logout()">
+                            <span>🚪</span> Logout
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-bar glass">
+            <input type="text" id="searchInput" placeholder="🔍 Search notes..." oninput="filterNotes()">
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('my-notes')">📝 My Notes</button>
+            <button class="tab" onclick="switchTab('shared')">📤 Shared with Me</button>
+        </div>
+
+        <div id="myNotesTab">
+            <div class="notes-grid" id="notesGrid"></div>
+        </div>
+
+        <div id="sharedTab" class="hidden">
+            <div class="notes-grid" id="sharedNotesGrid"></div>
+        </div>
+
+        <button class="fab" onclick="openNoteModal()">+</button>
+    </div>
+
+    <div id="noteModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">New Note</h2>
+                <button class="close-btn" onclick="closeNoteModal()">×</button>
+            </div>
+            <div class="input-group">
+                <label>Title</label>
+                <input type="text" id="noteTitle" placeholder="Note title">
+            </div>
+            <div class="input-group">
+                <label>Content</label>
+                <textarea id="noteContent" placeholder="Write your note..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>Color</label>
+                <div class="color-picker" id="colorPicker">
+                    <div class="color-option active" style="background: #6366f1" data-color="#6366f1"></div>
+                    <div class="color-option" style="background: #ec4899" data-color="#ec4899"></div>
+                    <div class="color-option" style="background: #f59e0b" data-color="#f59e0b"></div>
+                    <div class="color-option" style="background: #10b981" data-color="#10b981"></div>
+                    <div class="color-option" style="background: #8b5cf6" data-color="#8b5cf6"></div>
+                    <div class="color-option" style="background: #ef4444" data-color="#ef4444"></div>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Tags (press Enter to add)</label>
+                <div class="tag-input-container" id="tagContainer">
+                    <input type="text" id="tagInput" placeholder="Add tag..." 
+                           style="border: none; background: none; flex: 1; outline: none;"
+                           onkeypress="handleTagInput(event)">
+                </div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="saveNote()">Save Note</button>
+        </div>
+    </div>
+
+    <div id="shareModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2 class="modal-title">Share Note</h2>
+                <button class="close-btn" onclick="closeShareModal()">×</button>
+            </div>
+            <div class="input-group">
+                <label>Search User</label>
+                <input type="text" id="userSearch" placeholder="Search username..." oninput="searchUsers()">
+                <div class="user-list" id="userList"></div>
+            </div>
+            <div class="input-group">
+                <label>Selected User</label>
+                <input type="text" id="selectedUser" readonly placeholder="Select a user">
+            </div>
+            <div class="input-group">
+                <label>Unlock Date & Time</label>
+                <input type="datetime-local" id="unlockDateTime">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="shareNote()">Share Note</button>
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2 class="modal-title">My Profile</h2>
+                <button class="close-btn" onclick="closeProfileModal()">×</button>
+            </div>
+            
+            <div class="profile-section glass">
+                <div class="profile-header">
+                    <div class="profile-avatar-large" id="profileAvatarLarge"></div>
+                    <div>
+                        <h3 id="profileUsername"></h3>
+                        <p style="color: var(--text-secondary); margin-top: 0.5rem;" id="profileEmail"></p>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-card glass">
+                        <div class="stat-value" id="totalNotes">0</div>
+                        <div class="stat-label">Total Notes</div>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-value" id="sharedCount">0</div>
+                        <div class="stat-label">Shared Notes</div>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-value" id="memberSince">-</div>
+                        <div class="stat-label">Member Since</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section glass">
+                <h3 style="margin-bottom: 1rem;">Edit Profile</h3>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="editEmail" placeholder="your@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Profile Color</label>
+                    <div class="color-picker" id="profileColorPicker">
+                        <div class="color-option" style="background: #6366f1" data-color="#6366f1"></div>
+                        <div class="color-option" style="background: #ec4899" data-color="#ec4899"></div>
+                        <div class="color-option" style="background: #f59e0b" data-color="#f59e0b"></div>
+                        <div class="color-option" style="background: #10b981" data-color="#10b981"></div>
+                        <div class="color-option" style="background: #8b5cf6" data-color="#8b5cf6"></div>
+                        <div class="color-option" style="background: #ef4444" data-color="#ef4444"></div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="updateProfile()">Update Profile</button>
+                
+                <h4 style="margin: 2rem 0 1rem 0;">Change Password</h4>
+                <div class="input-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" placeholder="Enter current password">
+                </div>
+                <div class="input-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter new password">
+                </div>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="changePassword()">Change Password</button>
+            </div>
+
+            <div class="profile-section glass">
+                <h3 style="margin-bottom: 1rem;">Login History</h3>
+                <div id="loginHistoryList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sessionsModal" class="modal">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h2 class="modal-title">Active Sessions</h2>
+                <button class="close-btn" onclick="closeSessionsModal()">×</button>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Manage devices where you're currently logged in</p>
+            <div class="session-list" id="sessionsList"></div>
+        </div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('token');
+        let currentUser = localStorage.getItem('username');
+        let notes = [];
+        let sharedNotes = [];
+        let currentNoteId = null;
+        let currentShareNoteId = null;
+        let selectedColor = '#6366f1';
+        let profileColor = '#6366f1';
+        let tags = [];
+        let currentTab = 'my-notes';
+
+        if (token) {
+            showApp();
+        }
+
+        document.addEventListener('click', (e) => {
+            const userMenu = document.getElementById('userMenu');
+            const userAvatar = document.getElementById('userAvatar');
+            if (!userMenu.contains(e.target) && !userAvatar.contains(e.target)) {
+                userMenu.classList.add('hidden');
+            }
+        });
+
+        function toggleUserMenu() {
+            document.getElementById('userMenu').classList.toggle('hidden');
+        }
+
+        function toggleAuth() {
+            document.getElementById('loginForm').classList.toggle('hidden');
+            document.getElementById('registerForm').classList.toggle('hidden');
+        }
+
+        async function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const email = document.getElementById('registerEmail').value;
+
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password, email })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.username;
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', currentUser);
+                showApp();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                token = data.token;
+                currentUser = data.username;
+                profileColor = data.profileColor || '#6366f1';
+                localStorage.setItem('token', token);
+                localStorage.setItem('username', currentUser);
+                showApp();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function logout() {
+            await fetch('/api/logout', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            token = null;
+            currentUser = null;
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+        }
+
+        function showApp() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.remove('hidden');
+            
+            const initials = currentUser.slice(0, 2).toUpperCase();
+            const avatar = document.getElementById('userAvatar');
+            avatar.textContent = initials;
+            avatar.style.background = profileColor || '#6366f1';
+            
+            loadNotes();
+            loadSharedNotes();
+        }
+
+        async function loadNotes() {
+            const res = await fetch('/api/notes', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            notes = await res.json();
+            renderNotes();
+        }
+
+        async function loadSharedNotes() {
+            const res = await fetch('/api/shared-notes', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            sharedNotes = await res.json();
+            renderSharedNotes();
+        }
+
+        function renderNotes() {
+            const grid = document.getElementById('notesGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            
+            const filtered = notes.filter(note => 
+                note.title.toLowerCase().includes(search) || 
+                note.content.toLowerCase().includes(search) ||
+                (note.tags && note.tags.some(tag => tag.toLowerCase().includes(search)))
+            );
+
+            grid.innerHTML = filtered.length ? filtered.map(note => `
+                <div class="note-card glass" style="--note-color: ${note.color}">
+                    <div class="note-header">
+                        <div class="note-title">${note.title}</div>
+                        <div class="action-buttons">
+                            <button class="icon-btn" onclick="editNote('${note.id}')" title="Edit">✏️</button>
+                            <button class="icon-btn" onclick="openShareModal('${note.id}')" title="Share">📤</button>
+                            <button class="icon-btn" onclick="deleteNote('${note.id}')" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    ${note.tags && note.tags.length > 0 ? `
+                        <div class="note-tags">
+                            ${note.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-meta">
+                        <span>${new Date(note.createdAt).toLocaleDateString()}</span>
+                    </div>
+                </div>
+            `).join('') : '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No notes yet. Click the + button to create one!</p>';
+        }
+
+        function renderSharedNotes() {
+            const grid = document.getElementById('sharedNotesGrid');
+            
+            grid.innerHTML = sharedNotes.length ? sharedNotes.map(note => `
+                <div class="note-card glass ${!note.unlocked ? 'locked-note' : ''}" style="--note-color: ${note.color}">
+                    <div class="note-header">
+                        <div class="note-title">${note.title}</div>
+                    </div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-meta">
+                        <span>From: ${note.sharedBy}</span>
+                        ${!note.unlocked ? `<span>🔒 Unlocks: ${new Date(note.unlockDate).toLocaleString()}</span>` : ''}
+                    </div>
+                </div>
+            `).join('') : '<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">No shared notes</p>';
+        }
+
+        function openNoteModal(noteId = null) {
+            currentNoteId = noteId;
+            const modal = document.getElementById('noteModal');
+            
+            if (noteId) {
+                const note = notes.find(n => n.id === noteId);
+                document.getElementById('modalTitle').textContent = 'Edit Note';
+                document.getElementById('noteTitle').value = note.title;
+                document.getElementById('noteContent').value = note.content;
+                selectedColor = note.color;
+                tags = note.tags || [];
+                
+                document.querySelectorAll('#colorPicker .color-option').forEach(el => {
+                    el.classList.toggle('active', el.dataset.color === selectedColor);
+                });
+            } else {
+                document.getElementById('modalTitle').textContent = 'New Note';
+                document.getElementById('noteTitle').value = '';
+                document.getElementById('noteContent').value = '';
+                selectedColor = '#6366f1';
+                tags = [];
+                
+                document.querySelectorAll('#colorPicker .color-option').forEach(el => {
+                    el.classList.toggle('active', el.dataset.color === '#6366f1');
+                });
+            }
+            
+            renderTags();
+            modal.classList.add('active');
+        }
+
+        function closeNoteModal() {
+            document.getElementById('noteModal').classList.remove('active');
+            currentNoteId = null;
+        }
+
+        function renderTags() {
+            const container = document.getElementById('tagContainer');
+            const input = document.getElementById('tagInput');
+            const tagsHTML = tags.map(tag => `
+                <span class="tag-chip">
+                    ${tag}
+                    <button onclick="removeTag('${tag}')">×</button>
+                </span>
+            `).join('');
+            
+            container.innerHTML = tagsHTML + input.outerHTML;
+        }
+
+        function handleTagInput(event) {
+            if (event.key === 'Enter' && event.target.value.trim()) {
+                event.preventDefault();
+                const tag = event.target.value.trim();
+                if (!tags.includes(tag)) {
+                    tags.push(tag);
+                    renderTags();
+                }
+                event.target.value = '';
+            }
+        }
+
+        function removeTag(tag) {
+            tags = tags.filter(t => t !== tag);
+            renderTags();
+        }
+
+        document.getElementById('colorPicker').addEventListener('click', (e) => {
+            if (e.target.classList.contains('color-option')) {
+                document.querySelectorAll('#colorPicker .color-option').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                selectedColor = e.target.dataset.color;
+            }
+        });
+
+        async function saveNote() {
+            const title = document.getElementById('noteTitle').value;
+            const content = document.getElementById('noteContent').value;
+
+            if (!title || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const url = currentNoteId ? `/api/notes/${currentNoteId}` : '/api/notes';
+            const method = currentNoteId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ title, content, color: selectedColor, tags })
+            });
+
+            if (res.ok) {
+                closeNoteModal();
+                loadNotes();
+            }
+        }
+
+        function editNote(id) {
+            openNoteModal(id);
+        }
+
+        async function deleteNote(id) {
+            if (!confirm('Delete this note?')) return;
+
+            const res = await fetch(`/api/notes/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                loadNotes();
+            }
+        }
+
+        function openShareModal(noteId) {
+            currentShareNoteId = noteId;
+            document.getElementById('shareModal').classList.add('active');
+            document.getElementById('selectedUser').value = '';
+            document.getElementById('userSearch').value = '';
+            document.getElementById('userList').innerHTML = '';
+            
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('unlockDateTime').value = now.toISOString().slice(0, 16);
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('active');
+            currentShareNoteId = null;
+        }
+
+        async function searchUsers() {
+            const query = document.getElementById('userSearch').value;
+            if (!query) {
+                document.getElementById('userList').innerHTML = '';
+                return;
+            }
+
+            const res = await fetch(`/api/users/search?q=${query}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            const users = await res.json();
+            const userList = document.getElementById('userList');
+            
+            userList.innerHTML = users.map(user => `
+                <div class="user-item" onclick="selectUser('${user}')">${user}</div>
+            `).join('');
+        }
+
+        function selectUser(username) {
+            document.getElementById('selectedUser').value = username;
+            document.getElementById('userList').innerHTML = '';
+        }
+
+        async function shareNote() {
+            const recipient = document.getElementById('selectedUser').value;
+            const unlockDate = document.getElementById('unlockDateTime').value;
+
+            if (!recipient || !unlockDate) {
+                alert('Please select a user and unlock date');
+                return;
+            }
+
+            const res = await fetch(`/api/notes/${currentShareNoteId}/share`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ recipient, unlockDate })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                alert('Note shared successfully!');
+                closeShareModal();
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function openProfileModal() {
+            document.getElementById('userMenu').classList.add('hidden');
+            const res = await fetch('/api/user/profile', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const profile = await res.json();
+            
+            const initials = profile.username.slice(0, 2).toUpperCase();
+            document.getElementById('profileAvatarLarge').textContent = initials;
+            document.getElementById('profileAvatarLarge').style.background = profile.profileColor;
+            document.getElementById('profileUsername').textContent = profile.username;
+            document.getElementById('profileEmail').textContent = profile.email || 'No email set';
+            document.getElementById('totalNotes').textContent = profile.totalNotes;
+            document.getElementById('sharedCount').textContent = profile.sharedNotesCount;
+            document.getElementById('memberSince').textContent = new Date(profile.createdAt).toLocaleDateString();
+            document.getElementById('editEmail').value = profile.email || '';
+            
+            profileColor = profile.profileColor;
+            document.querySelectorAll('#profileColorPicker .color-option').forEach(el => {
+                el.classList.toggle('active', el.dataset.color === profileColor);
+            });
+            
+            const histRes = await fetch('/api/user/login-history', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const history = await histRes.json();
+            
+            document.getElementById('loginHistoryList').innerHTML = history.slice(0, 5).map(h => `
+                <div class="history-item">
+                    <div><strong>${h.device}</strong> · ${h.browser}</div>
+                    <div style="color: var(--text-secondary); font-size: 0.875rem; margin-top: 0.25rem;">
+                        ${new Date(h.loginTime).toLocaleString()}
+                    </div>
+                </div>
+            `).join('') || '<p style="color: var(--text-secondary);">No login history</p>';
+            
+            document.getElementById('profileModal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.remove('active');
+        }
+
+        document.getElementById('profileColorPicker').addEventListener('click', (e) => {
+            if (e.target.classList.contains('color-option')) {
+                document.querySelectorAll('#profileColorPicker .color-option').forEach(el => el.classList.remove('active'));
+                e.target.classList.add('active');
+                profileColor = e.target.dataset.color;
+            }
+        });
+
+        async function updateProfile() {
+            const email = document.getElementById('editEmail').value;
+
+            const res = await fetch('/api/user/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ email, profileColor })
+            });
+
+            if (res.ok) {
+                alert('Profile updated successfully!');
+                const avatar = document.getElementById('userAvatar');
+                avatar.style.background = profileColor;
+                const avatarLarge = document.getElementById('profileAvatarLarge');
+                avatarLarge.style.background = profileColor;
+            } else {
+                alert('Failed to update profile');
+            }
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            if (!currentPassword || !newPassword) {
+                alert('Please fill in all password fields');
+                return;
+            }
+
+            const res = await fetch('/api/user/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ currentPassword, newPassword })
+            });
+
+            if (res.ok) {
+                alert('Password changed successfully!');
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Failed to change password');
+            }
+        }
+
+        async function openSessionsModal() {
+            document.getElementById('userMenu').classList.add('hidden');
+            const res = await fetch('/api/user/sessions', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const sessions = await res.json();
+            
+            document.getElementById('sessionsList').innerHTML = sessions.map(s => `
+                <div class="session-item">
+                    <div class="session-info">
+                        <div><strong>${s.device}</strong> · ${s.browser}</div>
+                        <div style="color: var(--text-secondary); font-size: 0.875rem;">
+                            Last active: ${new Date(s.lastActive).toLocaleString()}
+                        </div>
+                        ${s.isCurrent ? '<span class="session-badge">Current Session</span>' : ''}
+                    </div>
+                    ${!s.isCurrent ? `<button class="btn btn-danger" onclick="terminateSession('${s.sessionId}')">End</button>` : ''}
+                </div>
+            `).join('') || '<p style="color: var(--text-secondary);">No active sessions</p>';
+            
+            document.getElementById('sessionsModal').classList.add('active');
+        }
+
+        function closeSessionsModal() {
+            document.getElementById('sessionsModal').classList.remove('active');
+        }
+
+        async function terminateSession(sessionId) {
+            if (!confirm('End this session?')) return;
+
+            const res = await fetch(`/api/user/sessions/${sessionId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (res.ok) {
+                openSessionsModal();
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'my-notes') {
+                document.getElementById('myNotesTab').classList.remove('hidden');
+                document.getElementById('sharedTab').classList.add('hidden');
+            } else {
+                document.getElementById('myNotesTab').classList.add('hidden');
+                document.getElementById('sharedTab').classList.remove('hidden');
+                loadSharedNotes();
+            }
+        }
+
+        function filterNotes() {
+            renderNotes();
+        }
+
+        setInterval(() => {
+            if (currentTab === 'shared') {
+                loadSharedNotes();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
